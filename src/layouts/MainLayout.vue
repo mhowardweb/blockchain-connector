@@ -1,7 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar color="primary" inverted>
+      <q-toolbar
+        color="primary"
+        inverted
+      >
         <q-btn
           flat
           dense
@@ -12,23 +15,35 @@
           <q-icon name="menu" />
         </q-btn>
 
-        <q-toolbar-title >
+        <q-toolbar-title>
           Bitshares Connect
           <div slot="subtitle">A simpler way.</div>
         </q-toolbar-title>
 
         <div v-if="userName">
-          <q-icon size="22px" color="red" name="person" />
-         {{userName}}
+          <q-icon
+            size="22px"
+            color="red"
+            name="person"
+          />
+          {{userName}}
         </div>
 
         <div v-if="connected">
-          <q-icon size="22px" color="green" name="thumb_up">
+          <q-icon
+            size="22px"
+            color="green"
+            name="thumb_up"
+          >
             <q-tooltip anchor="bottom left">Connected</q-tooltip>
           </q-icon>
         </div>
         <div v-else>
-          <q-icon size="22px" color="red" name="thumb_down">
+          <q-icon
+            size="22px"
+            color="red"
+            name="thumb_down"
+          >
             <q-tooltip anchor="bottom left">No Connection</q-tooltip>
           </q-icon>
         </div>
@@ -47,24 +62,36 @@
         <q-list-header>Menu</q-list-header>
         <q-item to="login">
           <q-item-side icon="lock" />
-          <q-item-main label="Login" sublabel="Login to Bitshares" />
+          <q-item-main
+            label="Login"
+            sublabel="Login to Bitshares"
+          />
         </q-item>
 
         <q-item to="transfer">
           <q-item-side icon="payment" />
-          <q-item-main label="Transfer" sublabel="Transfer Funds" />
+          <q-item-main
+            label="Transfer"
+            sublabel="Transfer Funds"
+          />
         </q-item>
 
         <q-item to="voting">
           <q-item-side icon="how_to_vote" />
-          <q-item-main label="Voting" sublabel="Vote for Bitshares " />
+          <q-item-main
+            label="Voting"
+            sublabel="Vote for Bitshares "
+          />
         </q-item>
 
         <q-item to="history">
           <q-item-side icon="history" />
-          <q-item-main label="History" sublabel="Account History " />
+          <q-item-main
+            label="History"
+            sublabel="Account History "
+          />
         </q-item>
-       </q-list>
+      </q-list>
     </q-layout-drawer>
 
     <q-page-container>
