@@ -3,3 +3,4 @@ test/brainkey_dictionary.js
 src/utils
 coverage/
 main.js
+vuex-bitshares/

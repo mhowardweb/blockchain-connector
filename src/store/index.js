@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+// import VuexPersist from 'vuex-persist';
+// import Cookies from 'js-cookie';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import vuexBitshares from 'vuex-bitshares';
 import app from './app';
+// import paths from './cachedPaths';
 // import orderHistory from './orderHistory';
 
 Vue.filter('relativeTime', (value) => {
@@ -44,6 +47,11 @@ Vue.filter('typeTitle', (value) => {
   }
 });
 
+// const vuexPersist = new VuexPersist({
+//   key: 'bsaccount',
+//   storage: localStorage,
+// });
+
 const { modules } = vuexBitshares;
 
 Vue.use(Vuex);
@@ -56,6 +64,7 @@ const store = new Vuex.Store({
     app,
     // orderHistory,
   },
+  // plugins: [vuexPersist.plugin],
 });
 
 export default store;

@@ -146,7 +146,7 @@ const actions = {
    */
   transferAsset: async ({ commit, rootGetters }, { to, assetId, amount, memo }) => {
     commit(types.TRANSFER_ASSET_REQUEST);
-    console.log('transferAsset to1', to);
+    console.log('transferAsset to', to);
     const fromId = rootGetters['account/getAccountUserId'];
 
     const keys = rootGetters['account/getKeys'];

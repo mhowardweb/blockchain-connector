@@ -10,11 +10,7 @@ export async function initUserData({ rootGetters, dispatch }) {
   await dispatch('acc/fetchCurrentUser', userId, { root: true });
   // await Promise.all([
   // dispatch('transactions/fetchComissions', null, { root: true }),
-  dispatch(
-    'operations/fetchAndSubscribe',
-    { userId, limit: 100 },
-    { root: true },
-  );
+  dispatch('operations/fetchAndSubscribe', { userId, limit: 100 }, { root: true });
   // ])
   // const defaultAssetsIds = rootGetters['assets/getDefaultAssetsIds']
   // defaultAssetsIds.forEach(id => {
@@ -33,11 +29,15 @@ export async function initUserData({ rootGetters, dispatch }) {
 
   const balancesIds = Object.keys(balances);
   balancesIds.push('1.3.121');
-  dispatch('history/fetchAll', {
-    baseId: '1.3.0',
-    assetsIds: balancesIds,
-    daysArr: [1, 7],
-  }, { root: true });
+  dispatch(
+    'history/fetchAll',
+    {
+      baseId: '1.3.0',
+      assetsIds: balancesIds,
+      daysArr: [1, 7],
+    },
+    { root: true },
+  );
 }
 
 export function unsubFromUserData({ dispatch }) {
@@ -50,4 +50,3 @@ export function resetUserData({ dispatch }) {
   dispatch('operations/resetState', null, { root: true });
   dispatch('orderBook/deinit', null, { root: true });
 }
-
