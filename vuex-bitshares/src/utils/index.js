@@ -57,16 +57,19 @@ export const formatPrices = (prices, base, quote) => {
 
 
 export const encryptMemo = (memo, fromKey, toPubkey) => {
+  console.log('encrypt memo called');
   const nonce = TransactionHelper.unique_nonce_uint64();
+  console.log('nonce created');
   const activePubkey = fromKey.toPublicKey().toPublicKeyString();
-
+  console.log('Encrypt Memo:', memo, fromKey, toPubkey, nonce);
   const message = Aes.encrypt_with_checksum(
     fromKey,
     toPubkey,
     nonce,
     memo
   );
-
+  console.log('message created');
+  console.log('return', activePubkey, toPubkey, nonce, message);
   return {
     from: activePubkey,
     to: toPubkey,
@@ -86,12 +89,15 @@ export const decryptMemo = (memo, privateKey) => {
 
 export const getMemoPrivKey = (keys, publicKey) => {
   const { active, owner } = keys;
-  const ownerPubkey = owner.toPublicKey().toPublicKeyString();
-  const activePubkey = active.toPublicKey().toPublicKeyString();
+  const ownerPubkey = owner.toPublicKey().toPublicKeyString('BTS');
+  const activePubkey = active.toPublicKey().toPublicKeyString('BTS');
+
   if (publicKey === ownerPubkey) {
+
     return owner;
   }
   if (publicKey === activePubkey) {
+
     return active;
   }
   return false;

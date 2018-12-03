@@ -1,21 +1,25 @@
 <template>
-<div class="">
-        <div v-if="hasPendingTransfer">
-            <div>
-                <p class="">Send {{ transfer.realamount }}
-                   {{ transfer.asset.symbol }} to {{ transfer.to }}</p>
-                <p></p>
-                <p class="_value" v-if="transfer.memo">With memo: {{ transfer.memo }}</p>
-                <p class="_value">Transaction fee {{ transferFee.base }} BTS
-                  ({{ transferFee.fiat }}$)</p>
-                </div>
-        </div>
-        <div v-else>NO PENDING TRANSFER !</div>
-
-      <q-btn color="primary" icon="check" label="Confirm" v-show="!pending" @click="confirm" />
-
-</div>
-
+<div class="confirm">
+  <div v-if="!hasPendingTransfer">NO PENDING TRANSFER !</div>
+     <q-list v-else>
+      <q-list-header>Confirm Transfer</q-list-header>
+      <q-item>
+        Send {{ transfer.realamount }} {{ transfer.asset.symbol }}
+      </q-item>
+      <q-item>
+        To {{ transfer.to }}
+      </q-item>
+      <q-item v-if="transfer.memo">
+        With Memo: {{ transfer.memo }}
+      </q-item>
+      <q-item>
+        Transaction Fee: {{ transferFee.base }} BTS
+      </q-item>
+      <q-item>
+        <q-btn color="primary" icon="check" label="Confirm" v-show="!pending" @click="confirm" />
+      </q-item>
+    </q-list>
+  </div>
 </template>
 
 <script>
@@ -43,45 +47,17 @@ export default {
         assetId, amount, to, memo,
       } = this.pendingTransfer;
       const asset = this.getAssetById(assetId);
+      console.log('Asset', asset);
       const realamount = (amount * (10 ** -asset.precision)).toFixed(asset.precision);
       return {
         asset, realamount, to, memo,
       };
     },
-    withdrawFee() {
-      const fee = this.getMemoFee(this.withdraw.memo);
-      return (fee * (10 ** -5)).toFixed(5);
-    },
-    withdraw() {
-      const { fee, address, memo } = this.pendingTransfer;
-      const { realamount, asset } = this.transfer;
-      const finalamount = realamount - fee;
-      const amount = finalamount.toFixed(asset.precision);
-      return {
-        amount, address, fee, memo,
-      };
-    },
-    isWithdraw() {
-      const { withdraw } = this.pendingTransfer;
-      if (withdraw) {
-        return true;
-      }
-      return false;
-    },
     transferFee() {
+      console.log('Transfer Price', this.transferPrice);
       const transferFeeBase = (this.transferPrice * (10 ** -5));
-      const transferFeeFiat = transferFeeBase * this.fiatMultiplier;
       return {
         base: transferFeeBase.toFixed(5),
-        fiat: transferFeeFiat.toFixed(5),
-      };
-    },
-    totalOrderFees() {
-      const baseValue = (this.orders.length * this.orderFee) / (10 ** 5);
-      const fiatValue = baseValue * this.fiatMultiplier;
-      return {
-        base: baseValue.toFixed(5),
-        fiat: fiatValue.toFixed(5),
       };
     },
   },
@@ -128,3 +104,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.confirm {
+  padding: 10px;
+}
+</style>

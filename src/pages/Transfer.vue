@@ -1,11 +1,19 @@
 <template>
   <q-page padding>
+    <q-modal v-model="opened" :content-css="{minWidth: '50vw'}">
+    <transfer />
+    <q-btn style="margin: 20px;"
+      color="secondary"
+      @click="opened = false"
+      label="Cancel"
+    />
+  </q-modal>
+
     <h4 class="shadow-2 heading">Transfer Tokens</h4>
     <q-field
       icon="rotate_right"
       label="Sender"
       helper="Username to send tokens from"
-      :placeholder="userName"
       :error="$v.sender.$error"
       error-label="Please type a valid Username"
       count
@@ -42,6 +50,7 @@
       error-label="Please type a valid Amount"
     >
       <div class="row no-wrap">
+        {{balances.tokens}}
         <q-input
           type="number"
           v-model.trim="amount"
@@ -49,8 +58,11 @@
         />
 
         <q-select
-          v-model="select"
+          radio
+          v-model="assetId"
           :options="selectOptions"
+          separator
+          inverted
         />
       </div>
     </q-field>
@@ -70,6 +82,22 @@
       />
     </q-field>
 
+    <q-field
+      icon="border_color"
+      label="Fee"
+      helper="Fee"
+      :error="$v.fee.$error"
+      error-label=""
+     >
+      <q-input
+        type="number"
+        disabled
+        v-model.trim="fee"
+        @blur="$v.fee.$touch"
+      />
+    </q-field>
+
+
     <q-field>
       <q-btn
       color="green"
@@ -80,15 +108,7 @@
     </q-btn>
     </q-field>
 
-    <q-modal v-model="opened">
-    <h4>Basic Modal</h4>
-    <transfer />
-    <q-btn
-      color="primary"
-      @click="opened = false"
-      label="Close"
-    />
-  </q-modal>
+
   </q-page>
 </template>
 
@@ -116,22 +136,18 @@ export default {
     },
     amount: { required },
     memo: {},
+    fee: {},
   },
   data() {
     return {
-      opened: 'false',
+      opened: false,
       sender: '',
       receiver: '',
       amount: '',
-      assetId: '',
-      memo: '',
-      select: '',
-      selectOptions: [
-        {
-          label: 'BTS',
-          value: 'BTS',
-        },
-      ],
+      memo: null,
+      fee: null,
+      assetId: '1.3.0',
+      selectOptions: [],
     };
   },
   computed: {
@@ -139,6 +155,7 @@ export default {
       userName: 'acc/getCurrentUserName',
       userId: 'acc/getAccountUserId',
       getAssetById: 'assets/getAssetById',
+      balances: 'balances/getItems',
     }),
   },
   methods: {
@@ -150,20 +167,37 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid && this.amount) {
         const transaction = {
-          assetId: this.coin,
+          assetId: this.assetId,
           amount: this.amount,
           to: this.receiver.toLowerCase(),
           memo: this.memo,
+          fee: this.fee,
         };
         this.setTransaction({ transaction });
-        console.log(transaction);
         this.$q.notify('Transaction Pending ...');
         this.opened = 'true';
         // this.$router.push({ name: 'confirm-transactions' });
       }
     },
+    setOptions() {
+      const setBalances = this.balances;
+      for (let i = 0; i < setBalances.length; i += 1) {
+        setBalances[i].value = setBalances[i].assetId;
+        delete setBalances[i].assetId;
+        setBalances[i].label = setBalances[i].ticker;
+        delete setBalances[i].ticker;
+        setBalances[i].sublabel = setBalances[i].tokens;
+        delete setBalances[i].tokens;
+      }
+      const removed = setBalances.map((data) => {
+        const { value, label, sublabel } = data;
+        return { value, label, sublabel };
+      });
+      this.selectOptions = removed;
+    },
   },
-  mounted() {
+  created() {
+    this.setOptions();
     if (!this.userId) {
       this.$q.notify('You are not Logged in !');
     }

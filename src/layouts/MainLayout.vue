@@ -20,10 +20,9 @@
           <div slot="subtitle">A simpler way.</div>
         </q-toolbar-title>
 
-        <div v-if="userName">
+        <div class="person" v-if="userName">
           <q-icon
             size="22px"
-            color="red"
             name="person"
           />
           {{userName}}
@@ -60,11 +59,19 @@
         inset-delimiter
       >
         <q-list-header>Menu</q-list-header>
-        <q-item to="login">
+        <q-item v-if="!isLoggedIn" to="login">
           <q-item-side icon="lock" />
           <q-item-main
             label="Login"
             sublabel="Login to Bitshares"
+          />
+        </q-item>
+        <template v-else>
+          <q-item to="balances">
+          <q-item-side icon="account_balance_wallet" />
+          <q-item-main
+            label="Balances"
+            sublabel="My Account Balance"
           />
         </q-item>
 
@@ -91,6 +98,16 @@
             sublabel="Account History "
           />
         </q-item>
+
+        <q-item @click.native="handleLogout">
+          <q-item-side icon="exit_to_app" />
+          <q-item-main
+            label="Logout"
+            sublabel="Logout "
+          />
+        </q-item>
+        </template>
+
       </q-list>
     </q-layout-drawer>
 
@@ -103,7 +120,7 @@
 
 <script>
 import { openURL } from 'quasar';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MyLayout',
@@ -114,15 +131,27 @@ export default {
   },
   methods: {
     openURL,
+    ...mapActions({
+      logout: 'acc/logout',
+    }),
+    handleLogout() {
+      this.$router.replace('login');
+      this.logout();
+    },
   },
   computed: {
     ...mapGetters({
       connected: 'connection/isReady',
       userName: 'acc/getCurrentUserName',
+      isLoggedIn: 'acc/isLoggedIn',
     }),
   },
 };
 </script>
 
-<style>
+<style scoped>
+.person {
+  padding-right: 20px;
+  color: rebeccapurple;
+}
 </style>

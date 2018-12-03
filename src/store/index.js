@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import VuexPersist from 'vuex-persist';
-// import Cookies from 'js-cookie';
+import VuexPersistedState from 'vuex-persistedstate';
+import Cookies from 'js-cookie';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import vuexBitshares from 'vuex-bitshares';
 import app from './app';
-// import paths from './cachedPaths';
+import balances from './balances';
+import paths from './cachedPaths';
 // import orderHistory from './orderHistory';
 
 Vue.filter('relativeTime', (value) => {
@@ -47,11 +48,6 @@ Vue.filter('typeTitle', (value) => {
   }
 });
 
-// const vuexPersist = new VuexPersist({
-//   key: 'bsaccount',
-//   storage: localStorage,
-// });
-
 const { modules } = vuexBitshares;
 
 Vue.use(Vuex);
@@ -62,9 +58,19 @@ const store = new Vuex.Store({
   modules: {
     ...modules,
     app,
+    balances,
     // orderHistory,
   },
-  // plugins: [vuexPersist.plugin],
+  plugins: [
+    VuexPersistedState({
+      storage: {
+        getItem: key => Cookies.get(key),
+        setItem: (key, value) => Cookies.set(key, value, { expires: 3 }),
+        removeItem: key => Cookies.remove(key),
+      },
+      paths: [...paths],
+    }),
+  ],
 });
 
 export default store;

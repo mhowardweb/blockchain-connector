@@ -5,7 +5,7 @@ import { encryptMemo, getMemoPrivKey } from '../../utils';
 
 
 const signTransaction = async (transaction, { active, owner }) => {
-  const pubkeys = [active, owner].map(privkey => privkey.toPublicKey().toPublicKeyString());
+  const pubkeys = [active, owner].map(privkey => privkey.toPublicKey().toPublicKeyString('BTS'));
   const requiredPubkeys = await transaction.get_required_signatures(pubkeys);
   requiredPubkeys.forEach(requiredPubkey => {
     if (active.toPublicKey().toPublicKeyString() === requiredPubkey) {
@@ -59,6 +59,7 @@ const transferAsset = async (fromId, to, assetId, amount, keys, memo = false) =>
 
   const memoPrivate = getMemoPrivKey(keys, memoKey);
 
+
   if (!memoPrivate) {
     return { success: false, error: 'Cant find key to encrypt memo' };
   }
@@ -78,12 +79,14 @@ const transferAsset = async (fromId, to, assetId, amount, keys, memo = false) =>
 
   if (memo) {
     try {
+      console.log('encrypting memo');
       transferObject.memo = encryptMemo(memo, memoPrivate, toAccount.data.account.options.memo_key);
+      console.log('memo', transferObject.memo);
     } catch (error) {
       return { success: false, error: 'Encrypt memo failed' };
     }
   }
-
+  console.log(transferObject);
   const transaction = new TransactionBuilder();
   transaction.add_type_operation('transfer', transferObject);
   return signAndBroadcastTransaction(transaction, keys);

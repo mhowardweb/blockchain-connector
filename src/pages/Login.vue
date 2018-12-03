@@ -10,12 +10,14 @@
         icon="cloud"
       />
       <q-tab
+      disabled
         label="File Login"
         slot="title"
         name="tab-2"
         icon="vpn_key"
       />
       <q-tab
+      disabled
         label="Sign Up"
         slot="title"
         name="tab-3"
@@ -60,7 +62,7 @@
           Login
         </q-btn>
       </q-tab-pane>
-      <q-tab-pane name="tab-2">Under Construction !!</q-tab-pane>
+      <q-tab-pane name="tab-2">File Login</q-tab-pane>
       <q-tab-pane name="tab-3">
         <signup />
       </q-tab-pane>
@@ -155,7 +157,7 @@ export default {
           this.$q.notify('Invalid username or password');
           this.name = null;
           this.password = null;
-        } else this.$router.push('main');
+        } else this.$router.push('balances');
       } else {
         if (this.file) {
           this.handleLoginFile();
@@ -166,7 +168,7 @@ export default {
           password: this.pin,
         });
         if (error) this.$q.notify('Invalid brainkey');
-        else this.$router.push('/');
+        else this.$router.push('login');
       }
       this.$q.loading.hide();
     },

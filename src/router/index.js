@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import routes from './routes';
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -9,6 +10,7 @@ Vue.use(VueRouter);
  * If not building with SSR mode, you can
  * directly export the Router instantiation
  */
+
 
 export default function (/* { store, ssrContext } */) {
   const Router = new VueRouter({
@@ -20,6 +22,15 @@ export default function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> publicPath
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE,
+  });
+
+  Router.beforeEach((to, from, next) => {
+    if (!to.meta.noAuth) {
+      const isLoggedIn = store.getters['acc/isLoggedIn'];
+      if (!isLoggedIn) next('login');
+    }
+
+    next();
   });
 
   return Router;

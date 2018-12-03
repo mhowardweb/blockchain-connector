@@ -74,6 +74,7 @@ module.exports = function (ctx) {
         'QStep',
         'QStepperNavigation',
         'QModal',
+        'QToggle',
       ],
       directives: [
         'Ripple',

@@ -25,6 +25,7 @@ const actions = {
     const ownerPubkey = keys.owner.toPublicKey().toPublicKeyString('BTS');
     const userId = await API.Account.getAccountIdByOwnerPubkey(ownerPubkey);
     const id = userId && userId[0];
+
     if (id) {
       commit(types.ACCOUNT_CLOUD_LOGIN, { keys, userId: id });
       return { error: false };
