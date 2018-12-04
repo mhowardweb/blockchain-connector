@@ -11,7 +11,9 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "bitsharesjs-ws": "^1.5.5",
     "date-fns": "^1.29.0",
+    "vue-css-donut-chart": "^1.0.1",
     "vuelidate": "^0.7.4",
     "vuex-bitshares": "file:vuex-bitshares",
     "vuex-persistedstate": "^2.5.4"

@@ -26,8 +26,7 @@
   },
   "homepage": "https://github.com/TrustyFund/vuex-bitshares#readme",
   "dependencies": {
-    "bitsharesjs": "^1.8.0",
-    "bitsharesjs-ws": "^1.5.5",
+    "bitsharesjs": "^1.8.2",
     "js-cookie": "^2.2.0"
   },
   "devDependencies": {

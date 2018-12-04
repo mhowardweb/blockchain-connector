@@ -8,6 +8,7 @@ const routes = [
       { path: 'transfer', component: () => import('pages/Transfer.vue') },
       { path: 'voting', component: () => import('pages/Voting.vue') },
       { path: 'history', component: () => import('pages/History.vue') },
+      { path: 'confirm-transfer', component: () => import('components/ConfirmTransfer.vue') },
     ],
   },
 ];

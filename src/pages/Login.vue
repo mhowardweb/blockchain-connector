@@ -35,6 +35,7 @@
         >
           <q-input
             type="text"
+            lower-case
             v-model.trim="name"
             @blur="$v.name.$touch"
           />

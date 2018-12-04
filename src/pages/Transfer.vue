@@ -1,13 +1,13 @@
 <template>
   <q-page padding>
-    <q-modal v-model="opened" :content-css="{minWidth: '50vw'}">
+    <!-- <q-modal v-model="opened" :content-css="{minWidth: '50vw'}">
     <transfer />
     <q-btn style="margin: 20px;"
       color="secondary"
       @click="opened = false"
       label="Cancel"
     />
-  </q-modal>
+  </q-modal> -->
 
     <h4 class="shadow-2 heading">Transfer Tokens</h4>
     <q-field
@@ -115,11 +115,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
-import ConfirmTransfer from '../components/ConfirmTransfer.vue';
+// import ConfirmTransfer from '../components/ConfirmTransfer.vue';
 
 export default {
   name: 'Transfer',
-  components: { transfer: ConfirmTransfer },
+  // components: { transfer: ConfirmTransfer },
   validations: {
     sender: { required },
     receiver: {
@@ -141,7 +141,7 @@ export default {
   data() {
     return {
       opened: false,
-      sender: '',
+      // sender: '',
       receiver: '',
       amount: '',
       memo: null,
@@ -152,7 +152,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userName: 'acc/getCurrentUserName',
+      sender: 'acc/getCurrentUserName',
       userId: 'acc/getAccountUserId',
       getAssetById: 'assets/getAssetById',
       balances: 'balances/getItems',
@@ -166,17 +166,18 @@ export default {
     handleTransfer() {
       this.$v.$touch();
       if (!this.$v.$invalid && this.amount) {
+        const asset = this.getAssetById(this.assetId);
         const transaction = {
           assetId: this.assetId,
-          amount: this.amount,
+          amount: (this.amount * (10 ** asset.precision)),
           to: this.receiver.toLowerCase(),
           memo: this.memo,
           fee: this.fee,
         };
         this.setTransaction({ transaction });
         this.$q.notify('Transaction Pending ...');
-        this.opened = 'true';
-        // this.$router.push({ name: 'confirm-transactions' });
+        // this.opened = 'true';
+        this.$router.push('confirm-transfer');
       }
     },
     setOptions() {
@@ -197,6 +198,7 @@ export default {
     },
   },
   created() {
+    this.$store.dispatch('app/initUserData');
     this.setOptions();
     if (!this.userId) {
       this.$q.notify('You are not Logged in !');

@@ -1,6 +1,7 @@
 <template>
   <q-page padding>
-    <h4 class=" shadow-2 heading">Account Balance ${{totalFiatValue}}</h4>
+    <h4 class=" shadow-2 heading">Account Balance ${{totalFiatValue.toFixed(2)}}</h4>
+    <vc-donut :sections="donutItems" hasLegend legendPlacement="top">100%</vc-donut>
     <q-toggle class="toggle" v-model="showSmallAssets" label="Hide Small Assets" />
 
     <q-table
@@ -13,7 +14,12 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import { mapGetters } from 'vuex';
+import Donut from 'vue-css-donut-chart';
+import 'vue-css-donut-chart/dist/vcdonut.css';
+
+Vue.use(Donut);
 
 export default {
   name: 'Main',
@@ -83,10 +89,11 @@ export default {
       historyLoaded: 'history/initialLoaded',
       items: 'balances/getItems',
       totalFiatValue: 'balances/getTotalFiatValue',
+      donutItems: 'balances/getItemsDonut',
     }),
     filteredItems() {
       if (!this.showSmallAssets) return this.items;
-      return this.items.filter(item => item.fiatValue >= 50);
+      return this.items.filter(item => item.fiatValue >= 5);
     },
 
   },

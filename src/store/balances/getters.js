@@ -57,13 +57,36 @@ const getters = {
       return {
         assetId,
         ticker: asset.symbol,
-        tokens,
-        fiatValue,
-        baseValue,
+        tokens: tokens.toFixed(2),
+        fiatValue: fiatValue.toFixed(2),
+        baseValue: baseValue.toFixed(2),
         share,
-        tokenPrice,
-        change7,
-        change1,
+        tokenPrice: tokenPrice.toFixed(2),
+        change7: change7.toFixed(2),
+        change1: change1.toFixed(2),
+      };
+    });
+
+    return items;
+  },
+
+  getItemsDonut: (state, getters, rootState, rootGetters) => {
+    const balances = rootGetters['acc/getUserBalances'];
+
+    const items = Object.keys(balances).map((assetId) => {
+    // eslint-disable-next-line prefer-destructuring
+      const balance = balances[assetId].balance;
+      const asset = rootGetters['assets/getAssetById'](assetId);
+
+      // eslint-disable-next-line no-mixed-operators
+
+      const baseValue = getters.getBalanceBaseValue({ assetId, value: balance });
+
+      const share = Math.round((baseValue / getters.getTotalBaseValue) * 100);
+      return {
+        assetId,
+        label: asset.symbol,
+        value: share,
       };
     });
 

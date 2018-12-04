@@ -18,3 +18,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+src-cordova/my-release-key.keystore
+src-cordova/.npmignore

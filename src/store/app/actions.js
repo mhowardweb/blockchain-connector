@@ -3,7 +3,6 @@ export function init(store) {
 }
 
 export async function initUserData({ rootGetters, dispatch }) {
-  console.log('init user data');
   const userId = rootGetters['acc/getAccountUserId'];
   dispatch('assets/fetchDefaultAssets', null, { root: true });
   // dispatch('marketsMonitor/initialize', null, { root: true });

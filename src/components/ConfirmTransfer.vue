@@ -1,8 +1,31 @@
 <template>
-<div class="confirm">
-  <div v-if="!hasPendingTransfer">NO PENDING TRANSFER !</div>
-     <q-list v-else>
-      <q-list-header>Confirm Transfer</q-list-header>
+<q-page padding>
+         <q-dialog
+          v-model="dialogShow"
+          prevent-close
+          >
+          <span slot="title">Confirm Transfer</span>
+          <div slot="body">
+            <q-item>
+        Send {{ transfer.realamount }} {{ transfer.asset.symbol }}
+      </q-item>
+      <q-item>
+        To {{ transfer.to }}
+      </q-item>
+      <q-item v-if="transfer.memo">
+        With Memo: {{ transfer.memo }}
+      </q-item>
+      <q-item>
+        Transaction Fee: {{ transferFee.base }} BTS
+      </q-item>
+      <q-item>
+        <q-btn color="primary" icon="check" label="Confirm" v-show="!pending" @click="confirm" />
+      </q-item>
+
+          </div>
+         </q-dialog>
+
+      <!-- <q-list-header>Confirm Transfer</q-list-header>
       <q-item>
         Send {{ transfer.realamount }} {{ transfer.asset.symbol }}
       </q-item>
@@ -18,8 +41,9 @@
       <q-item>
         <q-btn color="primary" icon="check" label="Confirm" v-show="!pending" @click="confirm" />
       </q-item>
-    </q-list>
-  </div>
+    </q-list> -->
+
+</q-page>
 </template>
 
 <script>
@@ -28,7 +52,7 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
   data() {
     return {
-
+      dialogShow: false,
     };
   },
   computed: {
@@ -47,14 +71,12 @@ export default {
         assetId, amount, to, memo,
       } = this.pendingTransfer;
       const asset = this.getAssetById(assetId);
-      console.log('Asset', asset);
       const realamount = (amount * (10 ** -asset.precision)).toFixed(asset.precision);
       return {
         asset, realamount, to, memo,
       };
     },
     transferFee() {
-      console.log('Transfer Price', this.transferPrice);
       const transferFeeBase = (this.transferPrice * (10 ** -5));
       return {
         base: transferFeeBase.toFixed(5),
@@ -72,8 +94,6 @@ export default {
       if (this.hasPendingTransfer) this.processTransfer();
     },
     async processTransfer() {
-      console.log('TRANSFER!');
-      console.log(this.pendingTransfer.to);
       const params = {
         to: this.pendingTransfer.to,
         assetId: this.pendingTransfer.assetId,
@@ -83,11 +103,9 @@ export default {
       if (this.pendingTransfer.memo) {
         params.memo = this.pendingTransfer.memo;
       }
-
       const result = await this.transferAsset(params);
       if (result.success) {
         this.$q.notify('Transaction completed');
-        // this.$router.push({ name: 'entry' });
       } else {
         this.$q.notify(`Transaction error: ${result.error}`);
       }
@@ -101,6 +119,9 @@ export default {
     if (!this.hasPendingTransfer) {
       this.$q.notify('Unable to create Transfer, try again');
     }
+  },
+  mounted() {
+    this.dialogShow = true;
   },
 };
 </script>
