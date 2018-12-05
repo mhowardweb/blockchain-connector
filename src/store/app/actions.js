@@ -7,15 +7,14 @@ export async function initUserData({ rootGetters, dispatch }) {
   dispatch('assets/fetchDefaultAssets', null, { root: true });
   // dispatch('marketsMonitor/initialize', null, { root: true });
   await dispatch('acc/fetchCurrentUser', userId, { root: true });
-  // await Promise.all([
-  // dispatch('transactions/fetchComissions', null, { root: true }),
-  dispatch('operations/fetchAndSubscribe', { userId, limit: 100 }, { root: true });
-  // ])
+  await dispatch('transactions/fetchComissions', null, { root: true });
+  await dispatch('operations/fetchAndSubscribe', { userId, limit: 100 }, { root: true });
+
   // const defaultAssetsIds = rootGetters['assets/getDefaultAssetsIds']
   // defaultAssetsIds.forEach(id => {
-  //   if (balances[id]) return
-  //   balances[id] = { balance: 0 }
-  // })
+  //    if (balances[id]) return
+  //    balances[id] = { balance: 0 }
+  //  })
 
   const balances = { ...rootGetters['acc/getUserBalances'] };
   await dispatch(

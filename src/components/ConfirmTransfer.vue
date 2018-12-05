@@ -1,53 +1,38 @@
 <template>
-<q-page padding>
-         <q-dialog
-          v-model="dialogShow"
-          prevent-close
-          >
-          <span slot="title">Confirm Transfer</span>
-          <div slot="body">
-            <q-item>
-        Send {{ transfer.realamount }} {{ transfer.asset.symbol }}
-      </q-item>
-      <q-item>
-        To {{ transfer.to }}
-      </q-item>
-      <q-item v-if="transfer.memo">
-        With Memo: {{ transfer.memo }}
-      </q-item>
-      <q-item>
-        Transaction Fee: {{ transferFee.base }} BTS
-      </q-item>
-      <q-item>
-        <q-btn color="primary" icon="check" label="Confirm" v-show="!pending" @click="confirm" />
-      </q-item>
+  <q-page padding>
+    <q-dialog
+      v-model="dialogShow"
+      prevent-close
+      @ok="confirm"
+      @cancel="cancel"
+    >
+      <span slot="title">Confirm Transfer</span>
+        <div slot="body">
+          <q-item>
+            Send {{ transfer.realamount }} {{ transfer.asset.symbol }}
+          </q-item>
+          <q-item>
+            To {{ transfer.to }}
+          </q-item>
+          <q-item v-if="transfer.memo">
+            With Memo: {{ transfer.memo }}
+          </q-item>
+          <q-item>
+            Transaction Fee: {{ transferFee.base }} BTS
+          </q-item>
+        </div>
 
-          </div>
-         </q-dialog>
-
-      <!-- <q-list-header>Confirm Transfer</q-list-header>
-      <q-item>
-        Send {{ transfer.realamount }} {{ transfer.asset.symbol }}
-      </q-item>
-      <q-item>
-        To {{ transfer.to }}
-      </q-item>
-      <q-item v-if="transfer.memo">
-        With Memo: {{ transfer.memo }}
-      </q-item>
-      <q-item>
-        Transaction Fee: {{ transferFee.base }} BTS
-      </q-item>
-      <q-item>
-        <q-btn color="primary" icon="check" label="Confirm" v-show="!pending" @click="confirm" />
-      </q-item>
-    </q-list> -->
-
-</q-page>
+        <template slot="buttons" slot-scope="props">
+          <q-btn color="primary" label="TRANSFER" @click=props.ok />
+          <q-btn flat label="No thanks" @click="props.cancel" />
+        </template>
+      </q-dialog>
+  </q-page>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { QSpinnerGrid } from 'quasar';
 
 export default {
   data() {
@@ -94,6 +79,13 @@ export default {
       if (this.hasPendingTransfer) this.processTransfer();
     },
     async processTransfer() {
+      this.$q.loading.show({
+        spinner: QSpinnerGrid,
+        message: 'Processing Transfer ...',
+        messageColor: 'blue',
+        spinnerSize: 250, // in pixels
+        spinnerColor: 'white',
+      });
       const params = {
         to: this.pendingTransfer.to,
         assetId: this.pendingTransfer.assetId,
@@ -109,6 +101,11 @@ export default {
       } else {
         this.$q.notify(`Transaction error: ${result.error}`);
       }
+      this.$q.loading.hide();
+      this.$router.replace('balances');
+    },
+    cancel() {
+      this.$router.replace('transfer');
     },
   },
   beforeDestroy() {

@@ -79,14 +79,11 @@ const transferAsset = async (fromId, to, assetId, amount, keys, memo = false) =>
 
   if (memo) {
     try {
-      console.log('encrypting memo');
       transferObject.memo = encryptMemo(memo, memoPrivate, toAccount.data.account.options.memo_key);
-      console.log('memo', transferObject.memo);
     } catch (error) {
       return { success: false, error: 'Encrypt memo failed' };
     }
   }
-  console.log(transferObject);
   const transaction = new TransactionBuilder();
   transaction.add_type_operation('transfer', transferObject);
   return signAndBroadcastTransaction(transaction, keys);
@@ -95,7 +92,6 @@ const transferAsset = async (fromId, to, assetId, amount, keys, memo = false) =>
 
 const placeOrders = async ({ orders, keys }) => {
   const transaction = new TransactionBuilder();
-  console.log('placing orders : ', orders);
   orders.forEach(o => transaction.add_type_operation('limit_order_create', o));
   return signAndBroadcastTransaction(transaction, keys);
 };

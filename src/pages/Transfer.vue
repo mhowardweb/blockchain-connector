@@ -92,7 +92,7 @@
       <q-input
         type="number"
         disabled
-        v-model.trim="fee"
+        v-model.trim="transferFee.base"
         @blur="$v.fee.$touch"
       />
     </q-field>
@@ -141,11 +141,10 @@ export default {
   data() {
     return {
       opened: false,
-      // sender: '',
       receiver: '',
       amount: '',
       memo: null,
-      fee: null,
+      // fee: null,
       assetId: '1.3.0',
       selectOptions: [],
     };
@@ -156,13 +155,21 @@ export default {
       userId: 'acc/getAccountUserId',
       getAssetById: 'assets/getAssetById',
       balances: 'balances/getItems',
+      transferPrice: 'transactions/getTransferFee',
     }),
+    transferFee() {
+      const transferFeeBase = (this.transferPrice * (10 ** -5));
+      return {
+        base: transferFeeBase.toFixed(5),
+      };
+    },
   },
   methods: {
     ...mapActions({
       checkUsername: 'acc/checkIfUsernameFree',
       setTransaction: 'transactions/setPendingTransfer',
     }),
+
     handleTransfer() {
       this.$v.$touch();
       if (!this.$v.$invalid && this.amount) {

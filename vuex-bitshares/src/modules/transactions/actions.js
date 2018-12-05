@@ -12,14 +12,14 @@ const actions = {
     const transferIdx = operations.indexOf('transfer');
 
     const { fee: orderFee } = fees[orderIdx][1];
-    const { fee: transeferFee, price_per_kbyte: kbytePrice } = fees[transferIdx][1];
+    const { fee: transferFee, price_per_kbyte: kbytePrice } = fees[transferIdx][1];
 
     const comissions = {
       order: {
         fee: orderFee
       },
       transfer: {
-        fee: transeferFee,
+        fee: transferFee,
         kbytePrice
       }
     };
