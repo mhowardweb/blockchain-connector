@@ -17,7 +17,7 @@
       <q-list highlight>
       <q-item multiline inset-separator v-for="item in filteredOperations" :key="item.id">
         <q-item-side>
-          <q-chip dense square pointing="right" :icon="item.type | historyIcon" color="primary">
+          <q-chip dense square :icon="item.type | historyIcon" color="primary">
             {{item.type | typeTitle}}
           </q-chip>
         </q-item-side>
